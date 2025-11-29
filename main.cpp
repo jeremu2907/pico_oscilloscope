@@ -1,12 +1,10 @@
-#include <vector>
-#include <cstring>
-
-#include "gpio/Output.hpp"
-#include "gpio/Input.hpp"
 #include "adc/Input.hpp"
-#include "i2c/Ssd1306.h"
-#include "i2c/Font8x8.h"
+#include "gpio/Base.hpp"
 #include "Macro.hpp"
+#include "pico/cyw43_arch.h"
+
+#undef PICO_BOARD_TYPE
+#define PICO_BOARD_TYPE PICO_W
 
 int main()
 {
@@ -20,22 +18,20 @@ int main()
 
     stdio_init_all();
     Gpio::Base::onboardLedOn();
-    
-    I2c::Ssd1306 oled;
 
-    double i = 0.0;
-    while(true)
-    {
-        sleep_ms(500);
-        std::string s = std::to_string(i);
-        uint8_t screenData[8 * 128] = {0x00};
-        Font8x8::getFont(screenData, s);
-        printf("write size %d", oled.writeScreen(screenData, 8 * 128));
-        i += 0.5;
-    }
+    Adc::Input gp26A0(26, GPIO_26_ADC);
+
+    gp26A0.installCallback(
+        [](float voltage)
+        {
+            const float DIODE_V_DROP_ONE_WAY = .209;
+            const float TOTAL_DIODE_DROP = DIODE_V_DROP_ONE_WAY * 2.0;
+            const float MIN_SIGNAL = 0.05;
+            printf("%f\n", voltage * 3.0 + ((voltage > MIN_SIGNAL)? TOTAL_DIODE_DROP : 0.0));
+        }
+    );
 
     MAIN_LOOP_START
-    Gpio::Input::runLoop();
     Adc::Input::runLoop();
     MAIN_LOOP_END
 }

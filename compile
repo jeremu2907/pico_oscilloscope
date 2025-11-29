@@ -1,0 +1,11 @@
+docker compose up pico_sdk --force-recreate --remove-orphans -d
+
+docker compose exec -it pico_sdk sh -c "\
+  cp /root/pico-sdk/external/pico_sdk_import.cmake /root/app/ && \
+  cp /root/pico-sdk/external/pico_sdk_import.cmake /root/pico_lib/ && \
+  cd /root/app && \
+  cmake -S . -B build && \
+  cmake --build build -j\$(nproc) \
+"
+
+docker compose down

@@ -1,0 +1,13 @@
+services:
+  pico_sdk:
+    platform: linux/arm64
+    image: ghcr.io/jeremu2907/pico_shared:latest
+    network_mode: host
+    volumes:
+      - ./:/root/app
+    
+    # The following entry point copies the includes (*.h) simply for developer reference.
+    # It has no effecct on the code
+    entrypoint: >
+      sh -c "mkdir -p /root/app/pico_lib/include && cp -rn /root/pico_lib/include/* /root/app/pico_lib/include/ && sleep infinity"
+

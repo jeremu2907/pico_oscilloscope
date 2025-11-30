@@ -15,7 +15,15 @@ set(picotoolVersion 2.2.0-a4)
 #   pico
 #   pico2
 #   pico_w
+#   pico2_w
 set(PICO_BOARD pico_w CACHE STRING "Board type")
+
+# Valid values:
+#   PICO
+#   PICO_W
+#   PICO_2
+#   PICO_2_W
+add_compile_definitions(PICO_BOARD_TYPE=PICO_W)
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(/root/pico-sdk/external/pico_sdk_import.cmake)
@@ -43,7 +51,7 @@ set(BASE_LIBS
     Shared
 )
 
-if(PICO_BOARD STREQUAL "pico_w")
+if((PICO_BOARD STREQUAL "pico_w") OR (PICO_BOARD STREQUAL "pico2_w"))
     list(APPEND BASE_LIBS pico_cyw43_arch_none)
 endif()
 

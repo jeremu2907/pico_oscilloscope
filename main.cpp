@@ -1,8 +1,7 @@
 #include "pico/cyw43_arch.h"
 #include "pico/time.h"
 
-#include "BoardType.h"
-#include "Macro.hpp"
+#include "Macros.hpp"
 
 #include "adc/Input.hpp"
 #include "gpio/Base.hpp"
@@ -11,7 +10,7 @@
 
 int main()
 {
-#if PICO_BOARD_TYPE == PICO_W
+#if IS_WIRELESS
     if (cyw43_arch_init())
     {
         printf("Wi-Fi init failed!\n");
@@ -23,8 +22,8 @@ int main()
     Gpio::Base::onboardLedOn();
 
     uint64_t currentTimeMs = to_ms_since_boot(get_absolute_time());
-    Adc::Input gp26A0(26, GPIO_26_ADC);
-    I2c::Ssd1306 oled;
+    Adc::Input gp26A0(26, Adc::Input::GPIO_26_ADC);
+    I2c::Ssd1306 oled(20, 21, i2c0);
 
     gp26A0.installCallback(
         [&currentTimeMs, &oled](float voltage)
@@ -39,10 +38,10 @@ int main()
             if (now - currentTimeMs > 100)
             {
                 std::string s = std::to_string(VOLTS);
-                s = "V : " + s;
-                uint8_t screenData[8 * 128] = {0x00};
-                Font8x8::getFont(screenData, s);
-                oled.writeScreen(screenData, 8 * 128);
+                s = "\n\nVolts: " + s;
+                oled.clearData();
+                oled.setData(s);
+                oled.writeData();
                 currentTimeMs = now;
             }
         });

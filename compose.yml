@@ -4,11 +4,10 @@ services:
     image: ghcr.io/jeremu2907/pico_shared:latest
     network_mode: host
     volumes:
-      - ./main.cpp/:/root/app/main.cpp:ro
       - ./build:/root/app/build
-      - ./BoardType.h:/root/pico_lib/include/BoardType.h:ro
-      - ./CMakeLists.txt:/root/app/CMakeLists.txt
       - ./pico_lib:/root/app/pico_lib
+      - ./main.cpp/:/root/app/main.cpp:ro
+      - ./CMakeLists.txt:/root/app/CMakeLists.txt
     
     # The following entry point copies the includes (*.h) simply for developer reference.
     # It has no effecct on the code

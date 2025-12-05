@@ -7,7 +7,7 @@ import time
 # -----------------------------
 # CONFIGURATION
 # -----------------------------
-USB_PORT = '/dev/cu.usbmodem1301'
+USB_PORT = '/dev/cu.usbmodem11201'
 BAUDRATE = 115200
 HISTORY_SECONDS = 300
 GUI_WINDOW_SECONDS = 20
@@ -92,5 +92,11 @@ def update(frame):
     return line,
 
 # ANIMATION
-ani = animation.FuncAnimation(fig, update, interval=UPDATE_INTERVAL_MS, blit=False)
+ani = animation.FuncAnimation(
+    fig,
+    update,
+    interval=UPDATE_INTERVAL_MS,
+    blit=False,
+    save_count=MAX_POINTS      # any upper bound
+)
 plt.show()

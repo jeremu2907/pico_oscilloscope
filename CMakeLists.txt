@@ -16,14 +16,14 @@ set(picotoolVersion 2.2.0-a4)
 #   pico2
 #   pico_w
 #   pico2_w
-set(PICO_BOARD pico_w CACHE STRING "Board type")
+set(PICO_BOARD pico2 CACHE STRING "Board type")
 
 # Valid values:
 #   PICO
 #   PICO_W
 #   PICO_2
 #   PICO_2_W
-add_compile_definitions(PICO_BOARD_TYPE=PICO_W)
+add_compile_definitions(PICO_BOARD_TYPE=PICO_2)
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(/root/pico-sdk/external/pico_sdk_import.cmake)

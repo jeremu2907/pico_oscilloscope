@@ -1,5 +1,9 @@
+#if IS_WIRELESS
 #include "pico/cyw43_arch.h"
+#endif
+
 #include "pico/time.h"
+#include "math.h"
 
 #include "Macros.hpp"
 
@@ -22,23 +26,27 @@ int main()
     Gpio::Base::onboardLedOn();
 
     uint64_t currentTimeMs = to_ms_since_boot(get_absolute_time());
-    Adc::Input gp26A0(26, Adc::Input::GPIO_26_ADC);
+    Adc::Input gp28A2(26, Adc::Input::GPIO_28_ADC);
+    gpio_pull_down(28);
     I2c::Ssd1306 oled(20, 21, i2c0);
 
-    gp26A0.installCallback(
+    gp28A2.installCallback(
         [&currentTimeMs, &oled](float voltage)
         {
-            const float DIODE_V_DROP_ONE_WAY = .209;
-            const float TOTAL_DIODE_DROP = DIODE_V_DROP_ONE_WAY * 2.0;
-            const float MIN_SIGNAL = 0.05;
-            const float VOLTS = voltage * 3.0 + ((voltage > MIN_SIGNAL) ? TOTAL_DIODE_DROP : 0.0);
-            printf("%f\n", VOLTS);
+            float measuredVoltage = 11.0 * 1.05 * (voltage - 1.55613);
+            if(abs(measuredVoltage) < 0.0393566074)
+            {
+                measuredVoltage = 0.0;
+            }
+
+            printf("%f\n", measuredVoltage);
 
             uint64_t now = to_ms_since_boot(get_absolute_time());
             if (now - currentTimeMs > 100)
             {
-                std::string s = std::to_string(VOLTS);
-                s = "\n\nVolts: " + s;
+                std::string s = std::to_string(measuredVoltage);
+                std::string padding = ((measuredVoltage < 0)? "" : " " );
+                s = "\n\nVolts: " + padding + s;
                 oled.clearData();
                 oled.setData(s);
                 oled.writeData();

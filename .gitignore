@@ -4,3 +4,8 @@ build
 .vscode
 pico_sdk_import.cmake
 venv
+*.zip
+*.gbr
+*_autosave*
+*.gbrjob
+.DS_Store

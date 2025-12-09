@@ -14,10 +14,10 @@
 
 int main()
 {
-    constexpr float VOLTAGE_LEVEL_BIAS = 1.5125f;
+    constexpr float VOLTAGE_LEVEL_BIAS = 1.509f;
     constexpr float FRONTEND_VOLTAGE_DIVIDER_RATIO = (1e3 + 10e3) / 1e3;
-    constexpr float MINIMUN_VOLTAGE_THRESHOLD = 0.005;
-    constexpr float REVERSED_POLARITY_VOLTAGE_BIAS = 0.2;
+    constexpr float MINIMUN_VOLTAGE_THRESHOLD = 0.0075;
+    constexpr float REVERSED_POLARITY_VOLTAGE_BIAS = 0.0;
     constexpr uint64_t MS_BETWEEN_SSD_1306_UPDATE = 100;
 
 #if IS_WIRELESS
@@ -50,12 +50,12 @@ int main()
             {
                 vChannel0 = 0.0;
             }
-            if(vChannel0 < 0.0)
+            else if(vChannel0 < 0.0)
             {
                 vChannel0 -= REVERSED_POLARITY_VOLTAGE_BIAS;
             }
 
-            printf("ch_0: %f\n", vChannel0);
+            printf("ch_0 %f\n", vChannel0);
         });
 
     gp27A1.installCallback(
@@ -67,12 +67,12 @@ int main()
             {
                 vChannel1 = 0.0;
             }
-            if(vChannel1 < 0.0)
+            else if (vChannel1 < 0.0)
             {
                 vChannel1 -= REVERSED_POLARITY_VOLTAGE_BIAS;
             }
 
-            printf("ch_1: %f\n", vChannel1);
+            printf("ch_1 %f\n", vChannel1);
         });
 
     MAIN_LOOP_START
